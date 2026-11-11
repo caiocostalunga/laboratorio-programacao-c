@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <string.h>
+
+
+int calcularPontos(float fatores[]) {
+    int total = 0;
+    int coluna;
+    float imc;
+
+    imc = fatores[6] / (fatores[7] * fatores[7]);
+
+   
+    if (fatores[0] >= 65) {
+        total = total + 3;
+    }
+    if (fatores[1] >= 160) {
+        total = total + 3;
+    }
+    if (fatores[2] == 1) {
+        total = total + 3;
+    }
+
+   
+    if (fatores[3] == 1) {
+        total = total + 2;
+    }
+    if (fatores[4] == 1) {
+        total = total + 2;
+    }
+    if (fatores[5] >= 160) {
+        total = total + 2;
+    }
+    if (imc >= 30) {
+        total = total + 2;
+    }
+
+   
+    for (coluna = 8; coluna < 13; coluna++) {
+        if (fatores[coluna] == 1) {
+            total = total + 1;
+        }
+    }
+
+    return total;
+}
+
+
+void classificarRisco(int pontos, char classificacao[]) {
+    if (pontos <= 4) {
+        strcpy(classificacao, "Menor de 10%");
+    } else if (pontos <= 9) {
+        strcpy(classificacao, "Entre 10% e 20%");
+    } else if (pontos <= 14) {
+        strcpy(classificacao, "Entre 20% e 30%");
+    } else if (pontos <= 18) {
+        strcpy(classificacao, "Entre 30% e 50%");
+    } else {
+        strcpy(classificacao, "Acima de 50%");
+    }
+}
+
+
+void mostrarRelatorio(char nomes[][80], float dados[][13], int quantidade) {
+    int paciente;
+    int pontos;
+    char classificacao[30];
+
+    printf("\n========================================\n");
+    printf("          RELATORIO DE RISCO\n");
+    printf("========================================\n");
+
+    for (paciente = 0; paciente < quantidade; paciente++) {
+        pontos = calcularPontos(dados[paciente]);
+        classificarRisco(pontos, classificacao);
+
+        printf("\nPaciente: %s\n", nomes[paciente]);
+        printf("Classificacao: %s\n", classificacao);
+    }
+
+    printf("\n========================================\n");
+}
+
+int main(void) {
+    char nomes[5][80];
+    float dados[5][13];
+    char perguntas[13][80] = {
+        "Idade (anos): ",
+        "Pressao arterial sistolica (mmHg): ",
+        "Tabagismo (1 = Sim / 0 = Nao): ",
+        "Diabetes (1 = Sim / 0 = Nao): ",
+        "Historico de doenca cardiaca (1 = Sim / 0 = Nao): ",
+        "Colesterol LDL (mg/dL): ",
+        "Peso (kg): ",
+        "Altura (m): ",
+        "Sedentarismo (1 = Sim / 0 = Nao): ",
+        "Alimentacao rica em ultraprocessados (1 = Sim / 0 = Nao): ",
+        "Estresse cronico elevado (1 = Sim / 0 = Nao): ",
+        "Sono inadequado (1 = Sim / 0 = Nao): ",
+        "Sexo biologico masculino (1 = Sim / 0 = Nao): "
+    };
+    int quantidade;
+    int paciente;
+    int coluna;
+
+    printf("========================================\n");
+    printf("        SISTEMA DE ANALISE DE RISCO\n");
+    printf("========================================\n");
+    printf("Quantidade de pacientes (1 a 5): ");
+    scanf("%d", &quantidade);
+    printf("Use ponto nos decimais. Exemplo: 1.75\n");
+
+    for (paciente = 0; paciente < quantidade; paciente++) {
+        printf("\nCADASTRO DO PACIENTE %d\n", paciente + 1);
+        printf("Nome (ate 79 caracteres simples): ");
+        scanf(" %79[^\n]", nomes[paciente]);
+
+        for (coluna = 0; coluna < 13; coluna++) {
+            printf("%s", perguntas[coluna]);
+            scanf("%f", &dados[paciente][coluna]);
+        }
+    }
+
+    mostrarRelatorio(nomes, dados, quantidade);
+
+    return 0;
+}
